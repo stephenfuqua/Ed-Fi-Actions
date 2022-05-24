@@ -57,6 +57,16 @@
         "actionVersion": "103b76ee743f7a666fd98dfaa15b4b7e314ca140"
     },
     {
+      "actionLink": "dawidd6/action-download-artifact",
+      "actionVersion": "1cf11afe3f1874cee82a8d5a2b45c0fd63f0fa22",
+      "tag": "v2.19.0"
+    },
+    {
+      "actionLink": "actions/setup-node",
+      "actionVersion": "1f8c6b94b26d0feae1e387ca63ccbdc44d27b561",
+      "tag": "v2"
+    },
+    {
       "actionLink": "./action-allowedlist",
       "actionVersion": null
     },

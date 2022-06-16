@@ -46,6 +46,15 @@ Error: bidirectional control character: Right-to-Left Embedding control characte
 bidirectional control character in Extensions/bidirectional_characters_test.cs line 1 column 10 (Right-to-Left Embedding control character)
 ```
 
+By default the bidi scanner tool includes a comprehensive set of files it ignores (executable, image, audio and other binary files where scanning for control characters wouldn't make sense) but there may be some cases where you will want to add to this ignore list. For example it does not ignore Visio (.vsdx) diagrams. In cases like this you can pass the repository scanner a path to an ignore file (hosted in the repository calling the scanner). We have provided sample config file that ignores .vsdx to the in the [bidi-scanner](../bidi-scanner) folder of this repo. An example of how to call the repository scanner with a config file is provided below:
+
+``` yaml
+bidi-scanner:
+    uses: ed-fi-alliance-oss/ed-fi-actions/.github/workflows/repository-scanner.yml@RND-270
+    with:
+      config-file-path: ./.github/workflows/bidi-scanner/config.json
+```
+
 ### AllowedList
 actions: a json string with all the unapproved actions used in the workflows in
 the repo. The json is in the format:
@@ -59,7 +68,7 @@ the repo. The json is in the format:
 ]
 ```
 
-Properties: 
+Properties:
 
 | Name          | Description                                    |
 | ------------- | ---------------------------------------------- |

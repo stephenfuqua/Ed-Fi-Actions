@@ -13,7 +13,7 @@
     can be uploaded into GitHub Code QL results.
 #>
 param (
-    # Directory in which to a recursive scan of PowerShell files
+    # Directory in which to do a recursive scan of PowerShell files
     [Parameter(Mandatory = $True)]
     [string]
     $Directory,
@@ -22,9 +22,13 @@ param (
     [string]
     $ResultsPath = "results.sarif",
 
-    # If set to $false, it will only print the analysis results.
+    # If set to $false, it will only print the results.
     [boolean]
-    $SaveToFile = $true
+    $SaveToFile = $true,
+
+    # List of excluded rules
+    [string[]]
+    $ExcludedRules = ""
 )
 
 
@@ -128,9 +132,9 @@ function Invoke-Analyzer {
     $SarifData | Out-Null
 
     if($SaveToFile) {
-        $results = Invoke-ScriptAnalyzer -Path $Directory
+        $results = Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules
     } else {
-        Invoke-ScriptAnalyzer -Path $Directory
+        Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules
         return
     }
 

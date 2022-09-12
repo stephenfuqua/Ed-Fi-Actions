@@ -16,7 +16,15 @@ param (
     # Directory in which to a recursive scan of PowerShell files
     [Parameter(Mandatory = $True)]
     [string]
-    $Directory
+    $Directory,
+
+    # Location of the results file
+    [string]
+    $ResultsPath = "results.sarif",
+
+    # If set to $false, it will only print the analysis results.
+    [boolean]
+    $SaveToFile = $true
 )
 
 
@@ -103,16 +111,28 @@ function Invoke-Analyzer {
         # Directory to scan
         [Parameter(Mandatory = $True)]
         [string]
-        $Directory
+        $Directory,
+
+        [boolean]
+        $SaveToFile
     )
 
-    $results = Invoke-ScriptAnalyzer -Path $Directory
+    if ($null -eq $(Get-Module -ListAvailable -Name PSScriptAnalyzer)) {
+        Install-Module -Name PSScriptAnalyzer -Force
+    }
 
     # There is a bug that causes the PSScriptAnalyzer to fail to notice the use of $SarifData inside
     # of the ForEach-Object. And the recommended approach for suppressing messages is failing too.
     # Therefore, this has a dummy usage of the parameter just to satisfy the analyzer
     # https://github.com/PowerShell/PSScriptAnalyzer/issues/1472
     $SarifData | Out-Null
+
+    if($SaveToFile) {
+        $results = Invoke-ScriptAnalyzer -Path $Directory
+    } else {
+        Invoke-ScriptAnalyzer -Path $Directory
+        return
+    }
 
     $results | ForEach-Object {
         $SarifData.runs[0].results += @{
@@ -176,13 +196,17 @@ Write-Output "Begin analyzing all PowerShell files in the specified directory tr
 
 $sarif = Get-SarifContainer
 
-Invoke-Analyzer -Sarif $sarif -Directory $Directory
+Invoke-Analyzer -Sarif $sarif -Directory $Directory -SaveToFile $SaveToFile
 Get-ChildItem -Path $Directory -Recurse -Directory | ForEach-Object {
-    Invoke-Analyzer -Sarif $sarif -Directory $_
+    Invoke-Analyzer -Sarif $sarif -Directory $_ -SaveToFile $SaveToFile
 }
 
-Invoke-PopulateRulesArray -Sarif $sarif
+if($SaveToFile) {
+    Invoke-PopulateRulesArray -Sarif $sarif
+    $sarif | ConvertTo-Json -Depth 10 | Out-File -Path $ResultsPath -Force
+    Write-Output "Done with analysis, see $ResultsPath for output."
+} else {
+    Write-Output "Done with analysis."
+}
 
-$sarif | ConvertTo-Json -Depth 10 | Out-File -Path results.sarif -Force
-Write-Output "Done with analysis, see results.sarif for output."
 

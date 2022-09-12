@@ -69,7 +69,7 @@ function Get-Locale {
 #>
 function Get-SarifContainer {
     return @{
-        '$schema' = "http://json.schemastore.org/sarif-2.1.0-rtm.1"
+        '$schema' = "http://json.schemastore.org/sarif-2.1.0"
         version   = "2.1.0"
         runs      = @(
             @{
@@ -78,6 +78,7 @@ function Get-SarifContainer {
                         name     = "PSScriptAnalyzer"
                         version  = (Find-Module PSScriptAnalyzer).Version
                         language = Get-Locale
+                        informationUri = "https://docs.microsoft.com/en-us/powershell/module/psscriptanalyzer"
                         rules    = @()
                     }
                 }
@@ -175,7 +176,7 @@ Write-Output "Begin analyzing all PowerShell files in the specified directory tr
 
 $sarif = Get-SarifContainer
 
-Invoke-Analyzer -Sarif $sarif -Directory .
+Invoke-Analyzer -Sarif $sarif -Directory $Directory
 Get-ChildItem -Path $Directory -Recurse -Directory | ForEach-Object {
     Invoke-Analyzer -Sarif $sarif -Directory $_
 }

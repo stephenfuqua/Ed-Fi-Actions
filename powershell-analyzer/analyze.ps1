@@ -18,13 +18,13 @@ param (
     [string]
     $Directory,
 
-    # Location of the results file
-    [string]
-    $ResultsPath = "results.sarif",
-
     # If set to $false, it will only print the results.
     [boolean]
     $SaveToFile = $true,
+
+    # Location of the results file
+    [string]
+    $ResultsPath = "results.sarif",
 
     # List of excluded rules
     [string[]]
@@ -132,9 +132,9 @@ function Invoke-Analyzer {
     $SarifData | Out-Null
 
     if($SaveToFile) {
-        $results = Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules
+        $results = Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules -Recurse
     } else {
-        Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules
+        Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules -Recurse
         return
     }
 
@@ -201,9 +201,6 @@ Write-Output "Begin analyzing all PowerShell files in the specified directory tr
 $sarif = Get-SarifContainer
 
 Invoke-Analyzer -Sarif $sarif -Directory $Directory -SaveToFile $SaveToFile
-Get-ChildItem -Path $Directory -Recurse -Directory | ForEach-Object {
-    Invoke-Analyzer -Sarif $sarif -Directory $_ -SaveToFile $SaveToFile
-}
 
 if($SaveToFile) {
     Invoke-PopulateRulesArray -Sarif $sarif

@@ -72,7 +72,7 @@ function Get-Locale {
         return "en-US"
     }
 
-    return $lang.Substring(5, 5)
+    return $lang.Substring(5, 5).replace('_', '-')
 }
 
 <#
@@ -149,7 +149,7 @@ function Invoke-Analyzer {
                 @{
                     physicalLocation = @{
                         artifactLocation = @{
-                            uri = (([system.uri]$_.ScriptPath).AbsoluteUri)
+                            uri = $PSCommandPath
                         }
                         region           = @{
                             startLine   = $_.Line

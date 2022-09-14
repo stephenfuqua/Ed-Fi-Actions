@@ -35,6 +35,6 @@ jobs:
         id: powershell-analyzer
 
       - name: Upload Result
-        uses: github/codeql-action/upload-sarif@b398f525a5587552e573b247ac661067fafa920b #v2
+        uses: github/codeql-action/upload-sarif@1fae5bf71b0ecdc7d0a2ef0d0c28409d99693966 #v2.9.2
         with:
           sarif_file: ./results.sarif

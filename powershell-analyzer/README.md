@@ -10,12 +10,12 @@ Lint PowerShell scripts and modules using [PSScriptAnalyzer](https://docs.micros
 
 ### Options
 
-| Parameter          | Description                                    |
-| ------------- | ---------------------------------------------- |
-| Directory    | Folder or Path to run analysis against. Required.    |
-| SaveToFile | Save to file, or print to console. Default: Save to file |
-| ResultsPath | Path to save the results. Default "./results.sarif" |
-| IncludedRules | [List of rules](https://docs.microsoft.com/en-us/powershell/utility-modules/psscriptanalyzer/rules/readme?view=ps-modules) that should be included to analysis. |
+| Parameter     | Description                                                                                                                                                       |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Directory     | Folder or Path to run analysis against. Required.                                                                                                                 |
+| SaveToFile    | Save to file, or print to console. Default: Save to file                                                                                                          |
+| ResultsPath   | Path to save the results. Default "./results.sarif"                                                                                                               |
+| IncludedRules | [List of rules](https://docs.microsoft.com/en-us/powershell/utility-modules/psscriptanalyzer/rules/readme?view=ps-modules) that should be included to analysis.   |
 | ExcludedRules | [List of rules](https://docs.microsoft.com/en-us/powershell/utility-modules/psscriptanalyzer/rules/readme?view=ps-modules) that should be excluded from analysis. |
 
 ### Result Formats

@@ -9,9 +9,16 @@ description: 'Lint PowerShell scripts and modules using PSScriptAnalyzer'
 branding:
   icon : alert-octagon
   color: blue
+inputs:
+  directory:  # id of input
+    description: 'Path to analyze'
+    required: true
+    default: '.'
 outputs:
   results:
     description: 'SARIF Report with the results'
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  args:
+  - ${{ inputs.directory }}

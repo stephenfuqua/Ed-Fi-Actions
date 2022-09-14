@@ -134,7 +134,7 @@ function Invoke-Analyzer {
     if($SaveToFile) {
         $results = Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules -Recurse
     } else {
-        Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules -Recurse
+        Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules -Recurse -ReportSummary
         return
     }
 
@@ -149,7 +149,9 @@ function Invoke-Analyzer {
                 @{
                     physicalLocation = @{
                         artifactLocation = @{
-                            uri = $PSCommandPath
+                            # Getting path of the script under analysis
+                            # https://github.com/PowerShell/PSScriptAnalyzer/issues/1758#issuecomment-1006072757
+                            uri = $_.ScriptPath
                         }
                         region           = @{
                             startLine   = $_.Line

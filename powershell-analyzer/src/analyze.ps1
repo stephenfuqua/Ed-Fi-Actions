@@ -74,11 +74,10 @@ function Get-Path {
 
     if ($runningInGitHub) {
         #Allows CodeQL to show preview of the file
-        return $path.replace('/github/workspace/testing-repo/', "")
+        return $path.replace('/github/workspace/testing-repo/', '')
     } else {
         return $path
     }
-
 }
 
 <#
@@ -115,11 +114,11 @@ function Get-SarifContainer {
             @{
                 tool    = @{
                     driver = @{
-                        name     = "PSScriptAnalyzer"
-                        version  = (Find-Module PSScriptAnalyzer).Version
-                        language = Get-Locale
+                        name           = "PSScriptAnalyzer"
+                        version        = (Find-Module PSScriptAnalyzer).Version
+                        language       = Get-Locale
                         informationUri = "https://docs.microsoft.com/en-us/powershell/module/psscriptanalyzer"
-                        rules    = @()
+                        rules          = @()
                     }
                 }
                 results = @()

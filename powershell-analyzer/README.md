@@ -4,11 +4,11 @@ Lint PowerShell scripts and modules using [PSScriptAnalyzer](https://docs.micros
 
 ## Run Locally
 
-```bash
+``` pwsh
 .\analyze.ps1 -Directory /folder-or-file
 ```
 
-### Options
+Options:
 
 | Parameter     | Description                                                                                                                                                       |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -23,49 +23,30 @@ Lint PowerShell scripts and modules using [PSScriptAnalyzer](https://docs.micros
 - [SARIF](https://sarifweb.azurewebsites.net/) reports
 - Print to console
 
-## Run in Action
+Example running locally printing to console:
 
-## Example usage
+``` pwsh
+.\analyze.ps1 -Directory /folder -SaveToFile $False
+```
 
-Minimal uses expression to use this action:
+Result:
+
+| RuleName                | Severity | ScriptName  | Line | Message |
+| ----------------------- | -------- | ----------- | ---- | ------- |
+| PSReviewUnusedParameter | Warning  | analyze.ps1 | 15   | Output  |
+
+## Run in GitHub Actions
+
+Include into your workflow file:
 
 ``` yaml
-- uses: ./powershell-analyzer
-  name: Lint PowerShell Scripts
-  id: powershell-analyzer
+    name: Linter
+    uses: Ed-Fi-Alliance-OSS/Ed-Fi-Actions/.github/workflows/powershell-analyzer.yml@latest
 ```
 
-Example for calling this action from a different repository:
+This will automatically analyze all the PowerShell scripts and modules in the repo, and will generate a SARIF report that will be included into `https://github.com/{ORGANIZATION}/{REPOSITORY}/security/code-scanning`
 
-```yml
-- uses: Ed-Fi-Alliance-OSS/Ed-Fi-Actions/powershell-analyzer@latest
-  name: Lint PowerShell Scripts
-  id: powershell-analyzer
-```
+## See it in action
 
-❗ In this one case, it is appropriate to use a tag ("latest") instead of a
-commit hash. Otherwise we have a chicken-and-egg problem: the approved list of
-actions would need to know the has for the commit that saves the update to the
-action.
-
-## Full example
-
-This example shows how to use the action to get a json file with all the used
-actions in an organization. The json file is uploaded as an artefact in the
-third step.
-
-``` yaml
-jobs:
-  load-all-used-actions:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - uses: Ed-Fi-Alliance-OSS/Ed-Fi-Actions/powershell-analyzer@latest
-        name: Lint PowerShell Scripts
-        id: powershell-analyzer
-```
-
-## Outputs
-
-TBD
+[analyze-repository.yml](https://github.com/Ed-Fi-Alliance-OSS/Ed-Fi-Actions/.github/workflows/analyze-repository.yml) runs the analysis on all files on this repo.
+You can manually trigger the workflow or see the results in the [Code Scanning](https://github.com/Ed-Fi-Alliance-OSS/Ed-Fi-Actions/security/code-scanning) section.

@@ -55,6 +55,34 @@ function Get-Severity {
 
 <#
 .DESCRIPTION
+    Returns the path for the file under analysis
+#>
+function Get-Path {
+    param (
+        # An individual test result from running Invoke-ScriptAnalyzer
+        [Parameter(Mandatory = $True)]
+        [PSCustomObject]
+        $analyzerResult
+    )
+
+    # Property ScriptPath returns the path where the file under analysis is located.
+    # When running in GitHub Actions, this is relative to the server where the build is running
+    # https://github.com/PowerShell/PSScriptAnalyzer/issues/1758#issuecomment-1006072757
+    $path = $analyzerResult.ScriptPath
+
+    $runningInGitHub = $env:GITHUB_ACTIONS -eq $true
+
+    if ($runningInGitHub) {
+        #Allows CodeQL to show preview of the file
+        return $path.replace('/github/workspace/testing-repo/', "")
+    } else {
+        return $path
+    }
+
+}
+
+<#
+.DESCRIPTION
     A Sarif file needs to have a locale in order for GitHub CodeQL to accept it.
     How we determine the locale depends on our operating system. In some cases,
     it won't even be set at the operating system level. If not set, just default
@@ -149,9 +177,7 @@ function Invoke-Analyzer {
                 @{
                     physicalLocation = @{
                         artifactLocation = @{
-                            # Getting path of the script under analysis
-                            # https://github.com/PowerShell/PSScriptAnalyzer/issues/1758#issuecomment-1006072757
-                            uri = $_.ScriptPath
+                            uri = Get-Path $_
                         }
                         region           = @{
                             startLine   = $_.Line
@@ -211,5 +237,3 @@ if($SaveToFile) {
 } else {
     Write-Output "Done with analysis."
 }
-
-

@@ -40,8 +40,5 @@ jobs:
 
                   "Deleting draft $($_.tag_name)" | Out-Host
                   Invoke-RestMethod -Method Delete -Uri $_.url -Headers $gh_headers
-
-                  "Deleting tag $($_.tag_name)" | Out-Host
-                  &git tag --delete $_.tag_name
               }
           }

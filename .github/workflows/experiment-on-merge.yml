@@ -17,6 +17,9 @@ jobs:
   experiment-merge:
     runs-on: ubuntu-latest
     steps:
+      - name: Display context information
+        run: echo '${{ github }}'
+
       - name: Create a draft release
         run: |
           curl \

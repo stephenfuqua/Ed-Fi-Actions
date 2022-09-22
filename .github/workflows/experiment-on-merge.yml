@@ -11,6 +11,7 @@ on:
 
 env:
   VERSION: bulk-client-${{ github.run_id }}
+  API_URL: https://api.github.com/repos/${{ github.action_repository }}
 
 jobs:
   experiment-merge:
@@ -22,5 +23,5 @@ jobs:
             -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/{owner}/{repo}/releases \
+            ${{ env.API_URL }}/releases \
             -d '{"tag_name":"${{ env.VERSION }}","target_commitish":"main","name":"${{ env.VERSION }}","body":"","draft":true,"prerelease":false,"generate_release_notes":false}'

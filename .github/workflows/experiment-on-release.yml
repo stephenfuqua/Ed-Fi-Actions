@@ -23,8 +23,8 @@ jobs:
           $repo = "${{ github.repository }}"
           $token = "${{ secrets.GITHUB_TOKEN }}"
 
-          # example: "bulk-client-3108280200" --> "bulk-client"
-          $packageName = ($release -replace "-\d*$", "")
+          # example: "bulk-client-v6.0.1"
+          $packageName = ($release -split "-v")[0]
 
           $url = "https://api.github.com/repos/$repo/releases"
           $gh_headers = @{
@@ -36,7 +36,7 @@ jobs:
 
           $release_list | ForEach-Object {
               if ($_.tag_name -like "$($packageName)-*" -and $_.draft) {
-                  "$($_.tag_name), $($_.url), is draft? $($_.draft)" | Out-Host
+                  "$($_.tag_name), $($_.url), is draft? $($_.draft)" | write-host
 
                   "Deleting draft $($_.tag_name)" | Out-Host
                   Invoke-RestMethod -Method Delete -Uri $_.url -Headers $gh_headers

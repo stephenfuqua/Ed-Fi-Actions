@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: Apache-2.0
+# Licensed to the Ed-Fi Alliance under one or more agreements.
+# The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+# See the LICENSE and NOTICES files in the project root for more information.
+
+name: Experiment with Merge
+on:
+  push:
+    branches:
+      - main
+
+env:
+  VERSION: bulk-client-${{ github.run_id }}
+
+jobs:
+  experiment-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create a draft release
+        run: |
+curl \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+  https://api.github.com/repos/${{ github.action_repository }}/releases \
+  -d '{"tag_name":"${{ env.VERSION }}","target_commitish":"main","name":"${{ env.VERSION }}","body":"","draft":true,"prerelease":false,"generate_release_notes":false}'

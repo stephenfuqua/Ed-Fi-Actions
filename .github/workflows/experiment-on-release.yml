@@ -13,5 +13,32 @@ jobs:
   experiment:
     runs-on: ubuntu-latest
     steps:
-      - name: Echo
-        run: echo 'hello world'
+      - name: Delete other pre-releases
+        shell: pwsh
+        run: |
+          $release = "${{ github.ref_name }}"
+          $repo = "${{ github.repository }}"
+          $token = "${{ secrets.GITHUB_TOKEN }}"
+
+          # example: "bulk-client-v6.0.1"
+          $packageName = ($release -split "-v")[0]
+
+          $url = "https://api.github.com/repos/$repo/releases"
+          $gh_headers = @{
+              "Accept"        = "application/vnd.github+json"
+              "Authorization" = "Bearer $token"
+          }
+
+          $release_list = Invoke-RestMethod $url -Headers $gh_headers
+
+          $release_list | ForEach-Object {
+              if ($_.tag_name -like "$($packageName)-*" -and $_.draft) {
+                  "$($_.tag_name), $($_.url), is draft? $($_.draft)" | write-host
+
+                  "Deleting draft $($_.tag_name)" | Out-Host
+                  Invoke-RestMethod -Method Delete -Uri $_.url -Headers $gh_headers
+
+                  "Deleting tag $($_.tag_name)" | Out-Host
+                  &git tag --delete $_.tag_name
+              }
+          }

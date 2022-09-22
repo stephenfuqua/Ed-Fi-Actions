@@ -11,7 +11,7 @@ on:
 
 env:
   VERSION: bulk-client-${{ github.run_id }}
-  API_URL: https://api.github.com/repos/${{ github.action_repository }}
+  API_URL: https://api.github.com/repos/${{ github.repository }}
 
 jobs:
   experiment-merge:

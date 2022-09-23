@@ -165,5 +165,10 @@
       "actionLink": "peter-evans/repository-dispatch",
       "actionVersion": "11ba7d3f32dc7cc919d1c43f1fec1c05260c26b5",
       "tag": "2.0.0"
+    },
+    {
+      "actionLink": "crazy-max/ghaction-import-gpg",
+      "actionVersion": "c8bb57c57e8df1be8c73ff3d59deab1dbc00e0d1",
+      "tag": "5.1.0"
     }
   ]

@@ -3,11 +3,11 @@
 # The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 # See the LICENSE and NOTICES files in the project root for more information.
 
-name: 'Test Reporter'
+name: "Test Reporter"
 on:
   workflow_run:
     workflows:
-      - 'On Pull Request'
+      - "On Pull Request"
 
 jobs:
   report-test-results:
@@ -18,7 +18,6 @@ jobs:
         with:
           artifact: powershell-analyzer-test-results
           name: Tests Results
-          path: '*.xml'
+          path: "*.xml"
           reporter: java-junit
           fail-on-error: false
-

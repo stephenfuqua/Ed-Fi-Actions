@@ -43,7 +43,7 @@ jobs:
             $release_list | ForEach-Object {
                 if ($_.tag_name -like "$($packageName)-*" -and $_.prerelease) {
                     "Deleting pre-release $($_.tag_name)" | Out-Host
-                    #Invoke-RestMethod -Method Delete -Uri $_.url -Headers $gh_headers
+                    Invoke-RestMethod -Method Delete -Uri $_.url -Headers $gh_headers
                 }
             }
 

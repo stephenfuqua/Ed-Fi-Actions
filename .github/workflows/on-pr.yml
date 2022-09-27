@@ -41,17 +41,21 @@ jobs:
           $PesterConfig.TestResult.Enabled = $True
           Invoke-Pester -Configuration $PesterConfig
 
-      - name: Diagnose missing xml file
-        shell: pwsh
-        working-directory: powershell-analyzer
-        run: |
-          Get-ChildItem -include *.xml -Recurse | ForEach-Object { $_.FullName | Write-Output }
+      - name: Upload Test Results
+        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535 # v3.0.0
+        with:
+          name: powershell-analyzer-test-results
+          path: powershell-analyzer/ps-analyzer.xml
+          retention-days: 5
 
+  report-test-results:
+    runs-on: ubuntu-latest
+    steps:
       - name: Upload Test Results
         uses: dorny/test-reporter@0d00bb14cb0cc2c9b8985df6e81dd333188224e1 #v1.5.0
         with:
-          artifact: ps-analyzer-results
+          artifact: powershell-analyzer-test-results
           name: Tests Results
-          path: '**/ps-analyzer.xml'
+          path: '*.xml'
           reporter: java-junit
           fail-on-error: false

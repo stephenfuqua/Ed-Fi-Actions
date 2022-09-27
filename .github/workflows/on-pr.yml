@@ -8,6 +8,10 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - powershell-analyzer/**/*.ps1
+      - powershell-analyzer/**/*.psm1
+      - actions-allowedlist/src/*.ps*
 
 jobs:
   run-lint-and-tests:

@@ -10,7 +10,7 @@
 
 param(
     # The repository directory to scan
-    [Parameter(Mandatory=$True)]
+    [Parameter(Mandatory = $True)]
     [string]
     $RepoDirectory
 )

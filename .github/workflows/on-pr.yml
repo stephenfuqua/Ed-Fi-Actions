@@ -50,6 +50,6 @@ jobs:
         with:
           artifact: ps-analyzer-results
           name: Tests Results
-          path: 'powershell-analyzer/*.xml'
+          path: '**/ps-analyzer.xml'
           reporter: java-junit
           fail-on-error: false

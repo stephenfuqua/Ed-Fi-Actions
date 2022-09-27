@@ -11,7 +11,7 @@ on:
 
 env:
   # This is for demonstration only in this repository
-  VERSION: bulk-client-${{ github.events.push.head_commit }}
+  VERSION: bulk-client-${{ github.sha }}
   API_URL: https://api.github.com/repos/${{ github.repository }}
 
 jobs:

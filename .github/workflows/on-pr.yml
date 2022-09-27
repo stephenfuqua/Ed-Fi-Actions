@@ -35,6 +35,7 @@ jobs:
         shell: pwsh
         working-directory: powershell-analyzer
         run: |
+          Update-Module -Name PowerShellGet
           Set-PSRepository psgallery -InstallationPolicy trusted
           # Install-Module -Name Pester -RequiredVersion 5.0.4 -Confirm:$false -Force
           Install-Module -Name Pester -Force -MinimumVersion 5.0.0

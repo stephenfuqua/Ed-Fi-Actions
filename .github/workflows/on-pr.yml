@@ -21,7 +21,9 @@ jobs:
 
       - name: Run Unit Tests
         shell: pwsh
+        working-directory: powershell-analyzer
         run: |
           Set-PSRepository psgallery -InstallationPolicy trusted
-          Install-Module -Name Pester -RequiredVersion 5.0.4 -Confirm:$false -Force
+          # Install-Module -Name Pester -RequiredVersion 5.0.4 -Confirm:$false -Force
+          Install-Module -Name Pester -Force -MinimumVersion 5.0.0
           Invoke-Pester

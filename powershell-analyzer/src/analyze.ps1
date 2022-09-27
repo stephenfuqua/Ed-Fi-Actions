@@ -75,7 +75,8 @@ function Get-Path {
     if ($runningInGitHub) {
         #Allows CodeQL to show preview of the file
         return $path.replace('/github/workspace/testing-repo/', '')
-    } else {
+    }
+    else {
         return $path
     }
 }
@@ -158,9 +159,10 @@ function Invoke-Analyzer {
     # https://github.com/PowerShell/PSScriptAnalyzer/issues/1472
     $SarifData | Out-Null
 
-    if($SaveToFile) {
+    if ($SaveToFile) {
         $results = Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules -Recurse
-    } else {
+    }
+    else {
         Invoke-ScriptAnalyzer -Path $Directory -ExcludeRule $ExcludedRules -Recurse -ReportSummary
         return
     }
@@ -233,10 +235,11 @@ $sarif = Get-SarifContainer
 
 Invoke-Analyzer -Sarif $sarif -Directory $Directory -SaveToFile $SaveToFile
 
-if($SaveToFile) {
+if ($SaveToFile) {
     Invoke-PopulateRulesArray -Sarif $sarif
     $sarif | ConvertTo-Json -Depth 10 | Out-File -Path $ResultsPath -Force
     Write-Output "Done with analysis, see $ResultsPath for output."
-} else {
+}
+else {
     Write-Output "Done with analysis."
 }

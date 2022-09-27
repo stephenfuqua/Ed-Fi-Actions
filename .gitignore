@@ -1,2 +1,3 @@
 # Reports
 *.sarif
+ps-analyzer.xml

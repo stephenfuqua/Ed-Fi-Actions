@@ -3,14 +3,15 @@
 # The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 # See the LICENSE and NOTICES files in the project root for more information.
 
-name: Experiment with Releases
+name: On Published Release
 on:
   release:
     types:
       - published
 
 jobs:
-  experiment:
+  delete-pre-releases:
+    name: Delete other pre-releases
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the Actions repo

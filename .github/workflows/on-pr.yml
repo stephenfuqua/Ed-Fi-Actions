@@ -6,12 +6,6 @@
 name: On Pull Request
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '**/*.ps1'
-      - '**/*.psm1'
   pull_request:
     branches:
       - main

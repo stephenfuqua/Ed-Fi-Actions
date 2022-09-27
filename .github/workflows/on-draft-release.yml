@@ -7,7 +7,7 @@ name: On Draft Release
 on:
   release:
     types:
-      - draft
+      - unpublished
 
 jobs:
   publish:

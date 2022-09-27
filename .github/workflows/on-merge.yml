@@ -3,7 +3,7 @@
 # The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 # See the LICENSE and NOTICES files in the project root for more information.
 
-name: Experiment with Merge
+name: Merge to Main
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ on:
 
 env:
   # This is for demonstration only in this repository
-  VERSION: bulk-client-${{ github.events.head }}
+  VERSION: bulk-client-${{ github.events.push.head_commit }}
   API_URL: https://api.github.com/repos/${{ github.repository }}
 
 jobs:

@@ -23,17 +23,17 @@ function GetActionsFromFile {
     # go through the parsed yaml
     foreach ($job in $parsedYaml["jobs"].GetEnumerator()) {
         Write-Host "  Job found: [$($job.Key)] in $workflowFileName"
-        $steps = $job.Value.Item("steps")
+        $steps=$job.Value.Item("steps")
         foreach ($step in $steps) {
-            $uses = $step.Item("uses")
+            $uses=$step.Item("uses")
             if ($null -ne $uses) {
                 Write-Host "   Found action used: [$uses]"
                 $actionLink = $uses.Split("@")[0]
                 $actionVersion = $uses.Split("@")[1]
 
                 $data = [PSCustomObject]@{
-                    actionLink       = $actionLink
-                    actionVersion    = $actionVersion
+                    actionLink = $actionLink
+                    actionVersion = $actionVersion
                     workflowFileName = $workflowFileName
                 }
 
@@ -53,13 +53,12 @@ function GetAllUsedActions {
 
     # get all the actions from the repo
     if (Test-Path -Path "$($RepoPath)/.github/workflows") {
-        $workflowFiles = Get-ChildItem "$($RepoPath)/.github/workflows" | Where-Object { $_.Name.EndsWith(".yml") }
-    }
-    else {
+        $workflowFiles = Get-ChildItem "$($RepoPath)/.github/workflows" | Where {$_.Name.EndsWith(".yml")}
+    } else {
         # Depending on how the workflow is called, /github/workspace may not always be the working directory, when calling from a job chain
         # (i.e. allowed actions and bidirectional scanner, we provide a different path since multiple repos are checked out. This should
         # eventually be passed from the calling workflow
-        $workflowFiles = Get-ChildItem "$($RepoPath)/testing-repo/.github/workflows" | Where-Object { $_.Name.EndsWith(".yml") }
+        $workflowFiles = Get-ChildItem "$($RepoPath)/testing-repo/.github/workflows" | Where {$_.Name.EndsWith(".yml")}
     }
 
     if ($workflowFiles.Count -lt 1) {
@@ -111,9 +110,9 @@ function CheckIfActionsApproved {
         $outputs
     )
 
-    $approved = (Get-Content $approvedPath | Convertfrom-Json -depth 10 | Select-Object  actionLink, actionVersion)
+    $approved = (Get-Content $approvedPath | convertfrom-Json -depth 10 | select  actionLink, actionVersion)
 
-    $outputs = $outputs | Select-Object  actionLink, actionVersion
+    $outputs = $outputs | select  actionLink, actionVersion
 
     $numApproved = 0
     $numDenied = 0
@@ -121,28 +120,26 @@ function CheckIfActionsApproved {
     $unapprovedOutputs = @()
     $approvedOutputs = @()
 
-    foreach ($output in $outputs) {
+    foreach($output in $outputs){
         Write-Verbose "Processing $($output.actionLink) version $($output.actionVersion)"
 
-        $approvedOutputActionVersions = ($approved | Where-Object actionLink -eq $output.actionLink)
+        $approvedOutputActionVersions = ($approved | where actionLink -eq $output.actionLink)
         if ($approvedOutputActionVersions) {
             Write-Verbose "Approved Versions for $($output.actionLink) : "
             Write-Verbose "$($approvedOutputActionVersions.actionVersion)"
-        }
-        else {
+        }else{
             Write-Verbose "No Approved versions for $($output.actionLink) were found. "
 
         }
 
 
-        $approvedOutput = $approvedOutputActionVersions | Where-Object actionVersion -eq $output.actionVersion | Where-Object { $_.actionVersion -eq $output.actionVersion }
+        $approvedOutput = $approvedOutputActionVersions | where actionVersion -eq $output.actionVersion | Where {$_.actionVersion -eq $output.actionVersion}
 
         if ($approvedOutput) {
             Write-Verbose "Output versions approved: $approvedOutput"
             $approvedOutputs += $approvedOutput
             $numApproved++
-        }
-        else {
+        }else {
             Write-Verbose "Output versions unapproved: $($output.actionLink) version $($output.actionVersion)"
             $unapprovedOutputs += $output
             $numDenied++
@@ -155,8 +152,7 @@ function CheckIfActionsApproved {
         Write-Host $unapprovedOutputs
         return $unapprovedOutputs
 
-    }
-    else {
+    }else{
         Write-Host "All $numApproved actions/versions were approved!"
     }
 

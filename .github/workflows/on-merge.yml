@@ -10,16 +10,14 @@ on:
       - main
 
 env:
-  VERSION: bulk-client-${{ github.run_id }}
+  # This is for demonstration only in this repository
+  VERSION: bulk-client-${{ github.events.head }}
   API_URL: https://api.github.com/repos/${{ github.repository }}
 
 jobs:
-  experiment-merge:
+  create-draft-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Display context information
-        run: echo '${{ github }}'
-
       - name: Create a draft release
         run: |
           curl \

@@ -23,6 +23,6 @@ jobs:
           curl \
             -X POST \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.EDFI_BUILD_AGENT_PAT }}" \
             ${{ env.API_URL }}/releases \
             -d '{"tag_name":"${{ env.VERSION }}","target_commitish":"main","name":"${{ env.VERSION }}","body":"","draft":false,"prerelease":true,"generate_release_notes":false}'

@@ -7,10 +7,15 @@ name: On Pre-Release
 on:
   release:
     types:
-      - prereleased
+      - published
 
 jobs:
   publish:
+    # This is a work-around. "on.release.types = prereleased" only triggers when the
+    # prerelease is created in the UI, for unknown reasons. Therefore trigger on
+    # "published" event but then restrict the job to run only if it is a prerelease.
+    if: "github.event.release.prerelease"
+
     name: Publish Pre-Release Package
     runs-on: ubuntu-latest
     steps:

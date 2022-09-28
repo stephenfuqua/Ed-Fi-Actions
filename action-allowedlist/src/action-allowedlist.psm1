@@ -22,12 +22,12 @@ function GetActionsFromFile {
 
     # go through the parsed yaml
     foreach ($job in $parsedYaml["jobs"].GetEnumerator()) {
-        Write-Host "  Job found: [$($job.Key)] in $workflowFileName"
+        Write-Output "  Job found: [$($job.Key)] in $workflowFileName"
         $steps = $job.Value.Item("steps")
         foreach ($step in $steps) {
             $uses = $step.Item("uses")
             if ($null -ne $uses) {
-                Write-Host "   Found action used: [$uses]"
+                Write-Output "   Found action used: [$uses]"
                 $actionLink = $uses.Split("@")[0]
                 $actionVersion = $uses.Split("@")[1]
 
@@ -63,13 +63,13 @@ function GetAllUsedActions {
     }
 
     if ($workflowFiles.Count -lt 1) {
-        Write-Host "Could not find workflow files in the current directory"
+        Write-Output "Could not find workflow files in the current directory"
     }
 
     # create a hastable to store the list of files in
     $actionsInRepo = @()
 
-    Write-Host "Found [$($workflowFiles.Count)] files in the workflows directory"
+    Write-Output "Found [$($workflowFiles.Count)] files in the workflows directory"
     foreach ($workflowFile in $workflowFiles) {
         try {
             if ($workflowFile.FullName.EndsWith(".yml")) {
@@ -81,7 +81,7 @@ function GetAllUsedActions {
         }
         catch {
             Write-Warning "Error handling this workflow file:"
-            Write-Host (Get-Content $workflowFiles[0].FullName -raw) | ConvertFrom-Json -Depth 10
+            Write-Output (Get-Content $workflowFiles[0].FullName -raw) | ConvertFrom-Json -Depth 10
         }
     }
 
@@ -95,7 +95,7 @@ function LoadAllUsedActions {
     # create hastable
     $actions = @()
 
-    Write-Host "Loading actions..."
+    Write-Output "Loading actions..."
     $actionsUsed = GetAllUsedActions -RepoPath $RepoPath
     $actions += $actionsUsed
 
@@ -151,13 +151,13 @@ function CheckIfActionsApproved {
     }
 
     if ($unapprovedOutputs.Count -gt 0) {
-        Write-Host "The following $numDenied actions/versions were denied!"
-        Write-Host $unapprovedOutputs
+        Write-Output "The following $numDenied actions/versions were denied!"
+        Write-Output $unapprovedOutputs
         return $unapprovedOutputs
 
     }
     else {
-        Write-Host "All $numApproved actions/versions were approved!"
+        Write-Output "All $numApproved actions/versions were approved!"
     }
 
 }

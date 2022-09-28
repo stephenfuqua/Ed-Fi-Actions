@@ -8,6 +8,8 @@ on:
   workflow_run:
     workflows:
       - "On Pull Request"
+    types:
+      - completed
 
 jobs:
   report-test-results:

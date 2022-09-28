@@ -23,14 +23,14 @@ if (Test-Path $assemblies) {
 function Get-YamlDocuments {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [string]$Yaml,
-        [switch]$UseMergingParser=$false
+        [switch]$UseMergingParser = $false
     )
     PROCESS {
         $stringReader = new-object System.IO.StringReader($Yaml)
         $parser = New-Object "YamlDotNet.Core.Parser" $stringReader
-        if($UseMergingParser) {
+        if ($UseMergingParser) {
             $parser = New-Object "YamlDotNet.Core.MergingParser" $parser
         }
 
@@ -46,25 +46,25 @@ function Get-YamlDocuments {
 function Convert-ValueToProperType {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [System.Object]$Node
     )
     PROCESS {
         if (!($Node.Value -is [string])) {
             return $Node
         }
-        
-        if ($Node.Style -eq 'Plain')
-        {
+
+        if ($Node.Style -eq 'Plain') {
             $types = @([int], [long], [double], [boolean], [decimal])
-            foreach($i in $types){
+            foreach ($i in $types) {
                 $parsedValue = New-Object -TypeName $i.FullName
-                if ($i.IsAssignableFrom([boolean])){
-                    $result = $i::TryParse($Node,[ref]$parsedValue) 
-                } else {
+                if ($i.IsAssignableFrom([boolean])) {
+                    $result = $i::TryParse($Node, [ref]$parsedValue)
+                }
+                else {
                     $result = $i::TryParse($Node, [Globalization.NumberStyles]::Any, [Globalization.CultureInfo]::InvariantCulture, [ref]$parsedValue)
                 }
-                if( $result ) {
+                if ( $result ) {
                     return $parsedValue
                 }
             }
@@ -81,14 +81,14 @@ function Convert-ValueToProperType {
  (\.[0-9]*)? # (fraction)
  (([ \t]*)Z|[-+][0-9][0-9]?(:[0-9][0-9])?)? # (time zone)
 '@
-        if([Text.RegularExpressions.Regex]::IsMatch($Node.Value, $regex, [Text.RegularExpressions.RegexOptions]::IgnorePatternWhitespace) ) {
+        if ([Text.RegularExpressions.Regex]::IsMatch($Node.Value, $regex, [Text.RegularExpressions.RegexOptions]::IgnorePatternWhitespace) ) {
             [DateTime]$datetime = [DateTime]::MinValue
-            if( ([DateTime]::TryParse($Node.Value,[ref]$datetime)) ) {
+            if ( ([DateTime]::TryParse($Node.Value, [ref]$datetime)) ) {
                 return $datetime
             }
         }
 
-        if ($Node.Style -eq 'Plain' -and $Node.Value -in '','~','null','Null','NULL') {
+        if ($Node.Style -eq 'Plain' -and $Node.Value -in '', '~', 'null', 'Null', 'NULL') {
             return $null
         }
 
@@ -99,13 +99,13 @@ function Convert-ValueToProperType {
 function Convert-YamlMappingToHashtable {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [YamlDotNet.RepresentationModel.YamlMappingNode]$Node,
         [switch] $Ordered
     )
     PROCESS {
         if ($Ordered) { $ret = [ordered]@{} } else { $ret = @{} }
-        foreach($i in $Node.Children.Keys) {
+        foreach ($i in $Node.Children.Keys) {
             $ret[$i.Value] = Convert-YamlDocumentToPSObject $Node.Children[$i] -Ordered:$Ordered
         }
         return $ret
@@ -115,29 +115,29 @@ function Convert-YamlMappingToHashtable {
 function Convert-YamlSequenceToArray {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [YamlDotNet.RepresentationModel.YamlSequenceNode]$Node,
         [switch]$Ordered
     )
     PROCESS {
         $ret = [System.Collections.Generic.List[object]](New-Object "System.Collections.Generic.List[object]")
-        foreach($i in $Node.Children){
+        foreach ($i in $Node.Children) {
             $ret.Add((Convert-YamlDocumentToPSObject $i -Ordered:$Ordered))
         }
-        return ,$ret
+        return , $ret
     }
 }
 
 function Convert-YamlDocumentToPSObject {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [System.Object]$Node, 
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [System.Object]$Node,
         [switch]$Ordered
     )
     PROCESS {
-        switch($Node.GetType().FullName){
-            "YamlDotNet.RepresentationModel.YamlMappingNode"{
+        switch ($Node.GetType().FullName) {
+            "YamlDotNet.RepresentationModel.YamlMappingNode" {
                 return Convert-YamlMappingToHashtable $Node -Ordered:$Ordered
             }
             "YamlDotNet.RepresentationModel.YamlSequenceNode" {
@@ -152,10 +152,10 @@ function Convert-YamlDocumentToPSObject {
 
 function Convert-HashtableToDictionary {
     Param(
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [hashtable]$Data
     )
-    foreach($i in $($data.Keys)) {
+    foreach ($i in $($data.Keys)) {
         $Data[$i] = Convert-PSObjectToGenericObject $Data[$i]
     }
     return $Data
@@ -163,7 +163,7 @@ function Convert-HashtableToDictionary {
 
 function Convert-OrderedHashtableToDictionary {
     Param(
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [System.Collections.Specialized.OrderedDictionary] $Data
     )
     foreach ($i in $($data.Keys)) {
@@ -174,22 +174,22 @@ function Convert-OrderedHashtableToDictionary {
 
 function Convert-ListToGenericList {
     Param(
-        [Parameter(Mandatory=$false,ValueFromPipeline=$true)]
-        [array]$Data=@()
+        [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
+        [array]$Data = @()
     )
     $ret = [System.Collections.Generic.List[object]](New-Object "System.Collections.Generic.List[object]")
-    for($i=0; $i -lt $Data.Count; $i++) {
+    for ($i = 0; $i -lt $Data.Count; $i++) {
         $ret.Add((Convert-PSObjectToGenericObject $Data[$i]))
     }
-    return ,$ret
+    return , $ret
 }
 
 function Convert-PSCustomObjectToDictionary {
     Param(
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [PSCustomObject]$Data
     )
-    $ret = [System.Collections.Generic.Dictionary[string,object]](New-Object 'System.Collections.Generic.Dictionary[string,object]')
+    $ret = [System.Collections.Generic.Dictionary[string, object]](New-Object 'System.Collections.Generic.Dictionary[string,object]')
     foreach ($i in $Data.psobject.properties) {
         $ret[$i.Name] = Convert-PSObjectToGenericObject $i.Value
     }
@@ -198,7 +198,7 @@ function Convert-PSCustomObjectToDictionary {
 
 function Convert-PSObjectToGenericObject {
     Param(
-        [Parameter(Mandatory=$false,ValueFromPipeline=$true)]
+        [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
         [System.Object]$Data
     )
 
@@ -213,11 +213,14 @@ function Convert-PSObjectToGenericObject {
 
     if ($dataType.FullName -eq "System.Management.Automation.PSCustomObject") {
         return Convert-PSCustomObjectToDictionary $data
-    } elseif (([System.Collections.Specialized.OrderedDictionary].IsAssignableFrom($dataType))){
+    }
+    elseif (([System.Collections.Specialized.OrderedDictionary].IsAssignableFrom($dataType))) {
         return Convert-OrderedHashtableToDictionary $data
-    } elseif (([System.Collections.IDictionary].IsAssignableFrom($dataType))){
+    }
+    elseif (([System.Collections.IDictionary].IsAssignableFrom($dataType))) {
         return Convert-HashtableToDictionary $data
-    } elseif (([System.Collections.IList].IsAssignableFrom($dataType))) {
+    }
+    elseif (([System.Collections.IList].IsAssignableFrom($dataType))) {
         return Convert-ListToGenericList $data
     }
     return $data -as $dataType
@@ -226,38 +229,38 @@ function Convert-PSObjectToGenericObject {
 function ConvertFrom-Yaml {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory=$false, ValueFromPipeline=$true, Position=0)]
+        [Parameter(Mandatory = $false, ValueFromPipeline = $true, Position = 0)]
         [string]$Yaml,
-        [switch]$AllDocuments=$false,
+        [switch]$AllDocuments = $false,
         [switch]$Ordered,
-        [switch]$UseMergingParser=$false
+        [switch]$UseMergingParser = $false
     )
 
     BEGIN {
         $d = ""
     }
     PROCESS {
-        if($Yaml -is [string]) {
+        if ($Yaml -is [string]) {
             $d += $Yaml + "`n"
         }
     }
 
     END {
-        if($d -eq ""){
+        if ($d -eq "") {
             return
         }
         $documents = Get-YamlDocuments -Yaml $d -UseMergingParser:$UseMergingParser
         if (!$documents.Count) {
             return
         }
-        if($documents.Count -eq 1){
+        if ($documents.Count -eq 1) {
             return Convert-YamlDocumentToPSObject $documents[0].RootNode -Ordered:$Ordered
         }
-        if(!$AllDocuments) {
+        if (!$AllDocuments) {
             return Convert-YamlDocumentToPSObject $documents[0].RootNode -Ordered:$Ordered
         }
         $ret = @()
-        foreach($i in $documents) {
+        foreach ($i in $documents) {
             $ret += Convert-YamlDocumentToPSObject $i.RootNode -Ordered:$Ordered
         }
         return $ret
@@ -307,20 +310,21 @@ public class StringQuotingEmitter: ChainedEventEmitter {
 }
 "@
 
-$referenceList = @([YamlDotNet.Serialization.Serializer].Assembly.Location,[Text.RegularExpressions.Regex].Assembly.Location)
+$referenceList = @([YamlDotNet.Serialization.Serializer].Assembly.Location, [Text.RegularExpressions.Regex].Assembly.Location)
 if ($PSVersionTable.PSEdition -eq "Core") {
     Add-Type -TypeDefinition $stringQuotingEmitterSource -ReferencedAssemblies $referenceList -Language CSharp -CompilerOptions "-nowarn:1701"
-} else {
+}
+else {
     Add-Type -TypeDefinition $stringQuotingEmitterSource -ReferencedAssemblies $referenceList -Language CSharp
 }
 
 function Get-Serializer {
     Param(
-        [Parameter(Mandatory=$true)][YamlDotNet.Serialization.SerializationOptions]$Options
+        [Parameter(Mandatory = $true)][YamlDotNet.Serialization.SerializationOptions]$Options
     )
-    
+
     $builder = New-Object "YamlDotNet.Serialization.SerializerBuilder"
-    
+
     if ($Options.HasFlag([YamlDotNet.Serialization.SerializationOptions]::Roundtrip)) {
         $builder = $builder.EnsureRoundtrip()
     }
@@ -343,7 +347,7 @@ function Get-Serializer {
 function ConvertTo-Yaml {
     [CmdletBinding(DefaultParameterSetName = 'NoOptions')]
     Param(
-        [Parameter(ValueFromPipeline = $true, Position=0)]
+        [Parameter(ValueFromPipeline = $true, Position = 0)]
         [System.Object]$Data,
 
         [string]$OutFile,
@@ -360,7 +364,7 @@ function ConvertTo-Yaml {
         $d = [System.Collections.Generic.List[object]](New-Object "System.Collections.Generic.List[object]")
     }
     PROCESS {
-        if($data -is [System.Object]) {
+        if ($data -is [System.Object]) {
             $d.Add($data)
         }
     }
@@ -381,10 +385,11 @@ function ConvertTo-Yaml {
                 Throw "Target file already exists. Use -Force to overwrite."
             }
             $wrt = New-Object "System.IO.StreamWriter" $OutFile
-        } else {
+        }
+        else {
             $wrt = New-Object "System.IO.StringWriter"
         }
-    
+
         if ($PSCmdlet.ParameterSetName -eq 'NoOptions') {
             $Options = 0
             if ($JsonCompatible) {
@@ -397,7 +402,7 @@ function ConvertTo-Yaml {
             $serializer = Get-Serializer $Options
             $serializer.Serialize($wrt, $norm)
         }
-        catch{
+        catch {
             $_
         }
         finally {
@@ -405,7 +410,8 @@ function ConvertTo-Yaml {
         }
         if ($OutFile) {
             return
-        } else {
+        }
+        else {
             return $wrt.ToString()
         }
     }

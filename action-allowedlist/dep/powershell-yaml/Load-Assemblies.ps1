@@ -18,16 +18,18 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 function Load-Assembly {
     $libDir = Join-Path $here "lib"
     $assemblies = @{
-        "core" = Join-Path $libDir "netstandard1.3\YamlDotNet.dll";
+        "core"  = Join-Path $libDir "netstandard1.3\YamlDotNet.dll";
         "net45" = Join-Path $libDir "net45\YamlDotNet.dll";
         "net35" = Join-Path $libDir "net35\YamlDotNet.dll";
     }
 
     if ($PSVersionTable.PSEdition -eq "Core") {
         return [Reflection.Assembly]::LoadFrom($assemblies["core"])
-    } elseif ($PSVersionTable.PSVersion.Major -ge 4) {
+    }
+    elseif ($PSVersionTable.PSVersion.Major -ge 4) {
         return [Reflection.Assembly]::LoadFrom($assemblies["net45"])
-    } else {
+    }
+    else {
         return [Reflection.Assembly]::LoadFrom($assemblies["net35"])
     }
 }
@@ -47,7 +49,7 @@ function Initialize-Assemblies {
         return Load-Assembly
     }
 
-    foreach ($i in $requiredTypes){
+    foreach ($i in $requiredTypes) {
         if ($i -notin $yaml.DefinedTypes.Name) {
             Throw "YamlDotNet is loaded but missing required types ($i). Older version installed on system?"
         }

@@ -12,6 +12,7 @@
     in JSON), or opened in Visual Studio Code with the sarif extension, or it
     can be uploaded into GitHub Code QL results.
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'unused', Justification = 'False positives')]
 param (
     # Directory in which to do a recursive scan of PowerShell files
     [Parameter(Mandatory = $True)]

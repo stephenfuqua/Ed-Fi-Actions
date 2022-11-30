@@ -239,5 +239,10 @@
         "actionLink": "supercharge/mongodb-github-action",
         "actionVersion": "538a4d2a1041920c47630172445cb688592d6e51",
         "tag": "1.8.0"
-    }
+    },
+    {
+      "actionLink": "mxschmitt/action-tmate",
+      "actionVersion": "28f608baaa037465aa887c21a7924e9e6b66a9e0",
+      "tag": "3.13"
+  }
 ]

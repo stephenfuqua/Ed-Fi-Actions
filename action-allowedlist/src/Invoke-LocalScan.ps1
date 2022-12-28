@@ -16,9 +16,9 @@ param(
 )
 
 
-Import-Module ./action-loader.psm1 -DisableNameChecking -Force
-Import-Module ./allowed-action-analyzer.psm1 -DisableNameChecking -Force
-Import-Module ./deprecated-action-analyzer.psm1 -DisableNameChecking -Force
+Import-Module ./action-loader.psm1 -DisableNameChecking
+Import-Module ./allowed-action-analyzer.psm1 -DisableNameChecking
+Import-Module ./deprecated-action-analyzer.psm1 -DisableNameChecking
 
 $actionsFound = LoadAllUsedActions -RepoPath $RepoDirectory
 $unapproved = CheckIfActionsApproved -outputs $actionsFound -approvedPath "$($PSScriptRoot)/../approved.json"

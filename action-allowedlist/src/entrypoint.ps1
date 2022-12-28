@@ -9,15 +9,19 @@ Import-Module /src/deprecated-action-analyzer.psm1 -DisableNameChecking
 
 $actionsFound = LoadAllUsedActions -RepoPath $pwd
 $unapproved = CheckIfActionsApproved -outputs $actionsFound
-$jsonObject = ($unapproved | ConvertTo-Json)
-$jsonObject | out-file ./unapproved-actions.json
-Write-Output "name=unapproved-actions::'$jsonObject'" >> $env:GITHUB_OUTPUT
+$jsonUnapprovedResults = ($unapproved | ConvertTo-Json)
+$jsonUnapprovedResults | out-file ./unapproved-actions.json
+Write-Output "name=unapproved-actions::'$jsonUnapprovedResults'" >> $env:GITHUB_OUTPUT
+
+$deprecated = CheckIfActionsDeprecated -outputs $actionsFound
+$jsonDeprecatedResults = ($deprecated | ConvertTo-Json)
+$jsonDeprecatedResults | out-file ./deprecated-actions.json
+Write-Output "::warning:: name=deprecated-actions::'$jsonDeprecatedResults'" >> $env:GITHUB_OUTPUT
 
 
 if ($unapproved.Count -gt 0) {
     Write-Error "Repo contains unapproved actions!"
     exit 1
 }else{
-    #Write-Host "All actions were approved!"
     exit 0
 }

@@ -4,8 +4,8 @@
 # See the LICENSE and NOTICES files in the project root for more information.
 
 Import-Module /src/action-loader.psm1 -DisableNameChecking
-Import-Module /src/action-allowedlist.psm1 -DisableNameChecking
-Import-Module /src/action-deprecatedlist.psm1 -DisableNameChecking
+Import-Module /src/allowed-action-analyzer.psm1 -DisableNameChecking
+Import-Module /src/deprecated-action-analyzer.psm1 -DisableNameChecking
 
 $actionsFound = LoadAllUsedActions -RepoPath $pwd
 $unapproved = CheckIfActionsApproved -outputs $actionsFound

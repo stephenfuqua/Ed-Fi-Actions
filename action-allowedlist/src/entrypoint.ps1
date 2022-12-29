@@ -11,12 +11,18 @@ $actionsFound = LoadAllUsedActions -RepoPath $pwd
 $unapproved = CheckIfActionsApproved -outputs $actionsFound
 $jsonUnapprovedResults = ($unapproved | ConvertTo-Json)
 $jsonUnapprovedResults | out-file ./unapproved-actions.json
-Write-Output "name=unapproved-actions::'$jsonUnapprovedResults'" >> $env:GITHUB_OUTPUT
+
+Write-Output "name=unapproved-actions::<<EOF" >> $GITHUB_OUTPUT
+Write-Output "$jsonUnapprovedResults" >> $GITHUB_OUTPUT
+Write-Output "EOF" >> $GITHUB_OUTPUT
 
 $deprecated = CheckIfActionsDeprecated -outputs $actionsFound
 $jsonDeprecatedResults = ($deprecated | ConvertTo-Json)
 $jsonDeprecatedResults | out-file ./deprecated-actions.json
-Write-Output "::warning:: name=deprecated-actions::'$jsonDeprecatedResults'" >> $env:GITHUB_OUTPUT
+
+Write-Output "name=deprecated-actions::<<EOF" >> $GITHUB_OUTPUT
+Write-Output "$jsonDeprecatedResults" >> $GITHUB_OUTPUT
+Write-Output "EOF" >> $GITHUB_OUTPUT
 
 
 if ($unapproved.Count -gt 0) {

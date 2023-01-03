@@ -244,6 +244,11 @@
         "actionLink": "actions/dependency-review-action",
         "actionVersion": "0ff3da6f81b812d4ec3cf37a04e2308c7a723730",
         "tag": "3.0.2"
+    },{
+        "actionLink": "dorny/test-reporter",
+        "actionVersion": "0d00bb14cb0cc2c9b8985df6e81dd333188224e1",
+        "tag": "1.5.0",
+        "deprecated": true
     },
     {
         "actionLink": "dorny/test-reporter",

@@ -22,12 +22,12 @@ function GetActionsFromFile {
 
     # go through the parsed yaml
     foreach ($job in $parsedYaml["jobs"].GetEnumerator()) {
-        Write-Host "  Job found: [$($job.Key)] in $workflowFileName"
+        Write-Information "  Job found: [$($job.Key)] in $workflowFileName"
         $steps=$job.Value.Item("steps")
         foreach ($step in $steps) {
             $uses=$step.Item("uses")
             if ($null -ne $uses) {
-                Write-Host "   Found action used: [$uses]"
+                Write-Information "   Found action used: [$uses]"
                 $actionLink = $uses.Split("@")[0]
                 $actionVersion = $uses.Split("@")[1]
 
@@ -62,13 +62,13 @@ function GetAllUsedActions {
     }
 
     if ($workflowFiles.Count -lt 1) {
-        Write-Host "Could not find workflow files in the current directory"
+        Write-Information "Could not find workflow files in the current directory"
     }
 
     # create a hastable to store the list of files in
     $actionsInRepo = @()
 
-    Write-Host "Found [$($workflowFiles.Count)] files in the workflows directory"
+    Write-Information "Found [$($workflowFiles.Count)] files in the workflows directory"
     foreach ($workflowFile in $workflowFiles) {
         try {
             if ($workflowFile.FullName.EndsWith(".yml")) {
@@ -80,7 +80,7 @@ function GetAllUsedActions {
         }
         catch {
             Write-Warning "Error handling this workflow file:"
-            Write-Host (Get-Content $workflowFiles[0].FullName -raw) | ConvertFrom-Json -Depth 10
+            Write-Information (Get-Content $workflowFiles[0].FullName -raw) | ConvertFrom-Json -Depth 10
         }
     }
 
@@ -94,7 +94,7 @@ function LoadAllUsedActions {
     # create hastable
     $actions = @()
 
-    Write-Host "Loading actions..."
+    Write-Information "Loading actions..."
     $actionsUsed = GetAllUsedActions -RepoPath $RepoPath
     $actions += $actionsUsed
 

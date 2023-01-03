@@ -30,7 +30,7 @@ function CheckIfActionsDeprecated {
 
         $actionVersions = ($deprecated | Where-Object actionLink -eq $output.actionLink)
         if ($actionVersions) {
-            Write-Information"Version: $($actionVersions.actionVersion) of action $($output.actionLink) is deprecated."
+            Write-Information "Version: $($actionVersions.actionVersion) of action $($output.actionLink) is deprecated."
             Write-Information "Use one of the following versions:"
             $options = $approved | Where-Object actionLink -eq $actionVersions.actionLink
             Write-Information $options.actionVersion

@@ -26,7 +26,7 @@ Write-Output "EOF" >> $GITHUB_OUTPUT
 
 
 if ($unapproved.Count -gt 0) {
-    Write-Error "Repo contains unapproved actions!"
+    Write-Error "Repo contains one or more action that is not approved for use."
     exit 1
 }else{
     exit 0

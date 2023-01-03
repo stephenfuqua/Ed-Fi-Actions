@@ -12,11 +12,11 @@ function CheckIfActionsApproved {
         $outputs
     )
 
-    Write-Host "Checking if used actions are approved"
+    Write-Information "Checking if used actions are approved"
 
-    $approved = (Get-Content $approvedPath | convertfrom-Json -depth 10 | select  actionLink, actionVersion)
+    $approved = (Get-Content $approvedPath | ConvertFrom-Json -depth 10 | Select-Object  actionLink, actionVersion)
 
-    $outputs = $outputs | select  actionLink, actionVersion
+    $outputs = $outputs | Select-Object actionLink, actionVersion
 
     $numApproved = 0
     $numDenied = 0
@@ -27,7 +27,7 @@ function CheckIfActionsApproved {
     foreach($output in $outputs){
         Write-Verbose "Processing $($output.actionLink) version $($output.actionVersion)"
 
-        $approvedOutputActionVersions = ($approved | where actionLink -eq $output.actionLink)
+        $approvedOutputActionVersions = ($approved | Where-Object actionLink -eq $output.actionLink)
         if ($approvedOutputActionVersions) {
             Write-Verbose "Approved Versions for $($output.actionLink) : "
             Write-Verbose "$($approvedOutputActionVersions.actionVersion)"
@@ -36,7 +36,7 @@ function CheckIfActionsApproved {
 
         }
 
-        $approvedOutput = $approvedOutputActionVersions | where actionVersion -eq $output.actionVersion | Where {$_.actionVersion -eq $output.actionVersion}
+        $approvedOutput = $approvedOutputActionVersions | Where-Object actionVersion -eq $output.actionVersion | Where-Object {$_.actionVersion -eq $output.actionVersion}
 
         if ($approvedOutput) {
             Write-Verbose "Output versions approved: $approvedOutput"
@@ -50,11 +50,11 @@ function CheckIfActionsApproved {
     }
 
     if ($unapprovedOutputs.Count -gt 0) {
-        Write-Host "The following $numDenied actions/versions were denied!"
-        Write-Host $unapprovedOutputs
+        Write-Information "The following $numDenied actions/versions were denied:"
+        Write-Information $unapprovedOutputs
         return $unapprovedOutputs
     }else{
-        Write-Host "All $numApproved actions/versions were approved!"
+        Write-Information "All $numApproved actions/versions are approved."
     }
 
 }

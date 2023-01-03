@@ -14,12 +14,12 @@ function CheckIfActionsDeprecated {
         $outputs
     )
 
-    Write-Host "Checking if used actions are deprecated"
+    Write-Information "Checking if used actions are deprecated"
 
-    $approved = (Get-Content $approvedPath | convertfrom-Json -depth 10 | select  actionLink, actionVersion)
-    $deprecated = (Get-Content $deprecatedPath | convertfrom-Json -depth 10 | select  actionLink, actionVersion)
+    $approved = (Get-Content $approvedPath | ConvertFrom-Json -depth 10 | Select-Object  actionLink, actionVersion)
+    $deprecated = (Get-Content $deprecatedPath | Convertfrom-Json -depth 10 | Select-Object  actionLink, actionVersion)
 
-    $outputs = $outputs | select  actionLink, actionVersion
+    $outputs = $outputs | Select-Object actionLink, actionVersion
 
     $numDeprecated = 0
 
@@ -28,22 +28,22 @@ function CheckIfActionsDeprecated {
     foreach($output in $outputs){
         Write-Verbose "Processing $($output.actionLink) version $($output.actionVersion)"
 
-        $actionVersions = ($deprecated | where actionLink -eq $output.actionLink)
+        $actionVersions = ($deprecated | Where-Object actionLink -eq $output.actionLink)
         if ($actionVersions) {
-            Write-Host "Version: $($actionVersions.actionVersion) of action $($output.actionLink) is deprecated."
-            Write-Host "Use one of the following versions:"
-            $options = $approved | where actionLink -eq $actionVersions.actionLink
-            Write-Host $options.actionVersion
+            Write-Information"Version: $($actionVersions.actionVersion) of action $($output.actionLink) is deprecated."
+            Write-Information "Use one of the following versions:"
+            $options = $approved | Where-Object actionLink -eq $actionVersions.actionLink
+            Write-Information $options.actionVersion
             $deprecatedOutputs += $actionVersions
             $numDeprecated++
         }
     }
 
     if ($deprecatedOutputs.Count -gt 0) {
-        Write-Host "There are $numDeprecated actions deprecated. Use suggested versions instead."
-        return $deprecatedOutputs | select -Unique
+        Write-Information "There are $numDeprecated actions deprecated. Use suggested versions instead."
+        return $deprecatedOutputs | Select-Object -Unique
     } else {
-        Write-Host "No deprecated actions found."
+        Write-Information "No deprecated actions found."
     }
 
 }

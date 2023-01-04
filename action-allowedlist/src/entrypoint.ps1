@@ -12,7 +12,7 @@ $actionsFound = Get-AllUsedActions -RepoPath $pwd
 Invoke-ValidateActions -ActionsConfiguration $actionsFound -approvedPath "$($PSScriptRoot)/../approved.json"
 
 Get-Log | ForEach-Object {
-    Write-Log $_
+    Write-Output $_
 }
 
 if (Get-ErrorOccurred) {

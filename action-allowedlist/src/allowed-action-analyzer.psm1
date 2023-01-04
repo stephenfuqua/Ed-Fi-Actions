@@ -31,12 +31,10 @@ function Invoke-ValidateActions {
 
         $approvedOutputActionVersions = ($approved | Where-Object actionLink -eq $output.actionLink)
         if ($approvedOutputActionVersions) {
-            Write-DebugLog "Approved Versions for $($output.actionLink) : "
-            Write-DebugLog "$($approvedOutputActionVersions.actionVersion)"
+            Write-DebugLog "Approved Versions for $($output.actionLink): $($approvedOutputActionVersions.actionVersion)"
         }
         else {
-            Write-DebugLog "No Approved versions for $($output.actionLink) were found. "
-
+            Write-DebugLog "No Approved versions for $($output.actionLink) were found."
         }
 
         $approvedOutput = $approvedOutputActionVersions `

@@ -4,10 +4,10 @@
 # See the LICENSE and NOTICES files in the project root for more information.
 
 # pull in central calls script
-. $PSScriptRoot\dependencies.ps1
+Import-Module $PSScriptRoot\dependencies.psm1 -Force -DisableNameChecking
 
 # Parse yaml file and return a hashtable with actionLink, actionVersion, and workFlowFileName
-function GetActionsFromFile {
+function Get-ActionsFromFile {
     param (
         [string] $workflow,
         [string] $workflowFileName
@@ -22,18 +22,18 @@ function GetActionsFromFile {
 
     # go through the parsed yaml
     foreach ($job in $parsedYaml["jobs"].GetEnumerator()) {
-        Write-Information "  Job found: [$($job.Key)] in $workflowFileName"
-        $steps=$job.Value.Item("steps")
+        Write-InfoLog "  Job found: [$($job.Key)] in $workflowFileName"
+        $steps = $job.Value.Item("steps")
         foreach ($step in $steps) {
-            $uses=$step.Item("uses")
+            $uses = $step.Item("uses")
             if ($null -ne $uses) {
-                Write-Information "   Found action used: [$uses]"
+                Write-InfoLog "   Found action used: [$uses]"
                 $actionLink = $uses.Split("@")[0]
                 $actionVersion = $uses.Split("@")[1]
 
                 $data = [PSCustomObject]@{
-                    actionLink = $actionLink
-                    actionVersion = $actionVersion
+                    actionLink       = $actionLink
+                    actionVersion    = $actionVersion
                     workflowFileName = $workflowFileName
                 }
 
@@ -46,57 +46,49 @@ function GetActionsFromFile {
 }
 
 
-function GetAllUsedActions {
+function Get-AllUsedActions {
     param (
         [string] $RepoPath = "/github/workspace"
     )
 
+    Write-InfoLog "Loading Actions YAML files"
+
     # get all the actions from the repo
     if (Test-Path -Path "$($RepoPath)/.github/workflows") {
-        $workflowFiles = Get-ChildItem "$($RepoPath)/.github/workflows" | Where {$_.Name.EndsWith(".yml")}
-    } else {
-        # Depending on how the workflow is called, /github/workspace may not always be the working directory, when calling from a job chain
-        # (i.e. allowed actions and bidirectional scanner, we provide a different path since multiple repos are checked out. This should
-        # eventually be passed from the calling workflow
-        $workflowFiles = Get-ChildItem "$($RepoPath)/testing-repo/.github/workflows" | Where {$_.Name.EndsWith(".yml")}
+        $workflowFiles = Get-ChildItem "$($RepoPath)/.github/workflows" | Where-Object { $_.Name.EndsWith(".yml") }
+    }
+    else {
+        # Depending on how the workflow is called, /github/workspace may not
+        # always be the working directory, when calling from a job chain (i.e.
+        # allowed actions and bidirectional scanner, we provide a different path
+        # since multiple repos are checked out. This should eventually be passed
+        # from the calling workflow
+        $workflowFiles = Get-ChildItem "$($RepoPath)/testing-repo/.github/workflows" | Where-Object { $_.Name.EndsWith(".yml") }
     }
 
     if ($workflowFiles.Count -lt 1) {
-        Write-Information "Could not find workflow files in the current directory"
+        Write-InfoLog "Could not find workflow files in the current directory"
     }
 
     # create a hastable to store the list of files in
     $actionsInRepo = @()
 
-    Write-Information "Found [$($workflowFiles.Count)] files in the workflows directory"
+    Write-InfoLog "Found [$($workflowFiles.Count)] files in the workflows directory"
     foreach ($workflowFile in $workflowFiles) {
         try {
             if ($workflowFile.FullName.EndsWith(".yml")) {
                 $workflow = Get-Content $workflowFile.FullName -Raw
-                $actions = GetActionsFromFile -workflow $workflow -workflowFileName $workflowFile.FullName
+                $actions = Get-ActionsFromFile -workflow $workflow -workflowFileName $workflowFile.FullName
 
                 $actionsInRepo += $actions
             }
         }
         catch {
-            Write-Warning "Error handling this workflow file:"
-            Write-Information (Get-Content $workflowFiles[0].FullName -raw) | ConvertFrom-Json -Depth 10
+            Write-WarnLog "Error occurred while reading $workflowFile"
+            Write-DebugLog $_
+            Write-DebugLog (Get-Content $workflowFiles[0].FullName -raw) | ConvertFrom-Json -Depth 10
         }
     }
 
     return $actionsInRepo
-}
-
-function LoadAllUsedActions {
-    param (
-        [string] $RepoPath = "/github/workspace"
-    )
-    # create hastable
-    $actions = @()
-
-    Write-Information "Loading actions..."
-    $actionsUsed = GetAllUsedActions -RepoPath $RepoPath
-    $actions += $actionsUsed
-
-    return $actions
 }

@@ -17,7 +17,7 @@ function Write-DebugLog {
         $Message
     )
 
-    $log.Add($Message) | Out-Null
+    $log.Add("::debug::$Message") | Out-Null
 
 }
 
@@ -40,7 +40,7 @@ function Write-WarnLog {
         $Message
     )
 
-    $log.Add($Message) | Out-Null
+    $log.Add("::warning::$Message") | Out-Null
 }
 
 function Write-ErrLog {
@@ -52,7 +52,7 @@ function Write-ErrLog {
     )
 
     $errorOccurred = $True
-    $log.Add($Message) | Out-Null
+    $log.Add("::error::$Message") | Out-Null
 }
 
 function Get-Log {

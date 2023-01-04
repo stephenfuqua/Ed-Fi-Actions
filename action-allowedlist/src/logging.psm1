@@ -6,8 +6,8 @@
 # This logging module writes messages intended for consumption by GitHub.
 # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
 
-$log = [System.Collections.ArrayList]::new()
-$errorOccurred = $false
+$script:log = [System.Collections.ArrayList]::new()
+$script:errorOccurred = $false
 
 function Write-DebugLog {
     [CmdletBinding()]
@@ -17,7 +17,7 @@ function Write-DebugLog {
         $Message
     )
 
-    $log.Add("::debug::$Message") | Out-Null
+    $script:log.Add("::debug::$Message") | Out-Null
 
 }
 
@@ -29,7 +29,7 @@ function Write-InfoLog {
         $Message
     )
 
-    $log.Add($Message) | Out-Null
+    $script:log.Add($Message) | Out-Null
 }
 
 function Write-WarnLog {
@@ -40,7 +40,7 @@ function Write-WarnLog {
         $Message
     )
 
-    $log.Add("::warning::$Message") | Out-Null
+    $script:log.Add("::warning::$Message") | Out-Null
 }
 
 function Write-ErrLog {
@@ -51,16 +51,16 @@ function Write-ErrLog {
         $Message
     )
 
-    $errorOccurred = $True
-    $log.Add("::error::$Message") | Out-Null
+    $script:errorOccurred = $True
+    $script:log.Add("::error::$Message") | Out-Null
 }
 
 function Get-Log {
-    $log
+    $script:log
 }
 
 function Get-ErrorOccurred {
-    $errorOccurred
+    $script:errorOccurred
 }
 
 Export-ModuleMember -Function Write-DebugLog, Write-InfoLog, Write-WarnLog, Write-ErrLog, Get-Log, Get-ErrorOccurred

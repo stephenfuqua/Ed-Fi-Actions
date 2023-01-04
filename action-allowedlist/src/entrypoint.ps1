@@ -6,28 +6,15 @@
 Import-Module /src/action-loader.psm1 -DisableNameChecking
 Import-Module /src/allowed-action-analyzer.psm1 -DisableNameChecking
 Import-Module /src/deprecated-action-analyzer.psm1 -DisableNameChecking
+Import-Module /src/logging.psm1
 
 $actionsFound = LoadAllUsedActions -RepoPath $pwd
-$unapproved = CheckIfActionsApproved -outputs $actionsFound
-$jsonUnapprovedResults = ($unapproved | ConvertTo-Json)
-$jsonUnapprovedResults | out-file ./unapproved-actions.json
 
-Write-Output "name=unapproved-actions::<<EOF" >> $GITHUB_OUTPUT
-Write-Output "$jsonUnapprovedResults" >> $GITHUB_OUTPUT
-Write-Output "EOF" >> $GITHUB_OUTPUT
+$found = CheckIfActionsApproved -ActionsConfiguration $actionsFound
+CheckIfActionsDeprecated -ActionsConfiguration $actionsFound
 
-$deprecated = CheckIfActionsDeprecated -outputs $actionsFound
-$jsonDeprecatedResults = ($deprecated | ConvertTo-Json)
-$jsonDeprecatedResults | out-file ./deprecated-actions.json
-
-Write-Output "name=deprecated-actions::<<EOF" >> $GITHUB_OUTPUT
-Write-Output "$jsonDeprecatedResults" >> $GITHUB_OUTPUT
-Write-Output "EOF" >> $GITHUB_OUTPUT
-
-
-if ($unapproved.Count -gt 0) {
-    Write-Error "Repo contains one or more action that is not approved for use."
+if ($found) {
     exit 1
-}else{
-    exit 0
 }
+
+exit 0

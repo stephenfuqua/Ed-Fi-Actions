@@ -9,7 +9,7 @@ Import-Module /src/logging.psm1
 
 $actionsFound = Get-AllUsedActions -RepoPath $pwd
 
-Invoke-ValidateActions -ActionsConfiguration $actionsFound -approvedPath "$($PSScriptRoot)/../approved.json"
+Invoke-ValidateActions -ActionsConfiguration $actionsFound -approvedPath "/src/approved.json"
 
 Get-Log | ForEach-Object {
     Write-Output $_

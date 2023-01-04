@@ -3,13 +3,11 @@
 # The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 # See the LICENSE and NOTICES files in the project root for more information.
 
-$debug = [System.Collections.ArrayList]::new()
-$information = [System.Collections.ArrayList]::new()
-$warning = [System.Collections.ArrayList]::new()
-$err = [System.Collections.ArrayList]::new()
-
 # This logging module writes messages intended for consumption by GitHub.
 # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
+
+$log = [System.Collections.ArrayList]::new()
+$errorOccurred = $false
 
 function Write-DebugLog {
     [CmdletBinding()]
@@ -19,12 +17,8 @@ function Write-DebugLog {
         $Message
     )
 
-    $debug.Add($Message) | Out-Null
+    $log.Add($Message) | Out-Null
 
-}
-
-function Get-DebugLog {
-    $debug
 }
 
 function Write-InfoLog {
@@ -35,11 +29,7 @@ function Write-InfoLog {
         $Message
     )
 
-    $information.Add($Message) | Out-Null
-}
-
-function Get-InfoLog {
-    $information
+    $log.Add($Message) | Out-Null
 }
 
 function Write-WarnLog {
@@ -50,11 +40,7 @@ function Write-WarnLog {
         $Message
     )
 
-    $warning.Add($Message) | Out-Null
-}
-
-function Get-WarnLog {
-    $warning
+    $log.Add($Message) | Out-Null
 }
 
 function Write-ErrLog {
@@ -65,12 +51,16 @@ function Write-ErrLog {
         $Message
     )
 
-    $err.Add($Message) | Out-Null
+    $errorOccurred = $True
+    $log.Add($Message) | Out-Null
 }
 
-function Get-ErrLog {
-    $err
+function Get-Log {
+    $log
 }
 
-Export-ModuleMember -Function Write-DebugLog, Get-DebugLog, Write-InfoLog, `
-    Get-InfoLog, Write-WarnLog, Get-WarnLog, Write-ErrLog, Get-ErrLog
+function Get-ErrorOccurred {
+    $errorOccurred
+}
+
+Export-ModuleMember -Function Write-DebugLog, Write-InfoLog, Write-WarnLog, Write-ErrLog, Get-Log, Get-ErrorOccurred

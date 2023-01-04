@@ -16,14 +16,31 @@ param(
 )
 
 
-Import-Module ./action-loader.psm1 -DisableNameChecking
-Import-Module ./allowed-action-analyzer.psm1 -DisableNameChecking
-Import-Module ./deprecated-action-analyzer.psm1 -DisableNameChecking
+Import-Module ./action-loader.psm1 -DisableNameChecking -Force
+Import-Module ./allowed-action-analyzer.psm1 -DisableNameChecking -Force
+Import-Module ./logging.psm1 -Force
 
-$actionsFound = LoadAllUsedActions -RepoPath $RepoDirectory
-$unapproved = CheckIfActionsApproved -outputs $actionsFound -approvedPath "$($PSScriptRoot)/../approved.json"
-$unapproved | Out-Host
+$actionsFound = Get-AllUsedActions -RepoPath $RepoDirectory
 
-$deprecated = CheckIfActionsDeprecated -outputs $actionsFound -approvedPath "$($PSScriptRoot)/../approved.json" -deprecatedPath "$($PSScriptRoot)/../deprecated.json"
-$deprecated | Out-Host
+Invoke-ValidateActions -ActionsConfiguration $actionsFound -approvedPath "$($PSScriptRoot)/../approved.json"
 
+Get-DebugLog | ForEach-Object {
+    Write-Debug $_
+}
+Get-InfoLog | ForEach-Object {
+    Write-Output $_
+}
+Get-WarnLog | ForEach-Object {
+    Write-Warning $_
+}
+$errFound = $False
+Get-ErrLog | ForEach-Object {
+    Write-Error $_
+    $errFound = $True
+}
+
+if ($errFound) {
+    exit 1
+}
+
+exit 0

@@ -5,15 +5,28 @@
 
 Import-Module /src/action-loader.psm1 -DisableNameChecking
 Import-Module /src/allowed-action-analyzer.psm1 -DisableNameChecking
-Import-Module /src/deprecated-action-analyzer.psm1 -DisableNameChecking
 Import-Module /src/logging.psm1
 
-$actionsFound = LoadAllUsedActions -RepoPath $pwd
+$actionsFound = Get-AllUsedActions -RepoPath $pwd
 
-$found = CheckIfActionsApproved -ActionsConfiguration $actionsFound
-CheckIfActionsDeprecated -ActionsConfiguration $actionsFound
+Invoke-ValidateActions -ActionsConfiguration $actionsFound -approvedPath "$($PSScriptRoot)/../approved.json"
 
-if ($found) {
+Get-DebugLog | ForEach-Object {
+    Write-Debug $_
+}
+Get-InfoLog | ForEach-Object {
+    Write-Output $_
+}
+Get-WarnLog | ForEach-Object {
+    Write-Warning $_
+}
+$errFound = $False
+Get-ErrLog | ForEach-Object {
+    Write-Error $_
+    $errFound = $True
+}
+
+if ($errFound) {
     exit 1
 }
 

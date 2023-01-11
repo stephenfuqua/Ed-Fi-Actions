@@ -2,12 +2,14 @@
     {
         "actionLink": "actions/checkout",
         "actionVersion": "5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f",
-        "tag": "v2.3.4"
+        "tag": "v2.3.4",
+        "deprecated": true
     },
     {
         "actionLink": "actions/checkout",
         "actionVersion": "ec3a7ce113134d7a93b817d10a8272cb61118579",
-        "tag": "v2.4.0"
+        "tag": "v2.4.0",
+        "deprecated": true
     },
     {
         "actionLink": "actions/checkout",
@@ -27,7 +29,8 @@
     {
         "actionLink": "actions/cache",
         "actionVersion": "c64c572235d810460d0d6876e9c705ad5002b353",
-        "tag": "v2.1.6"
+        "tag": "v2.1.6",
+        "deprecated": true
     },
     {
         "actionLink": "actions/cache",
@@ -94,9 +97,9 @@
         "tag": "v3.1.0"
     },
     {
-      "actionLink": "actions/upload-artifact",
-      "actionVersion": "83fd05a356d7e2593de66fc9913b3002723633cb",
-      "tag": "v3.1.1"
+        "actionLink": "actions/upload-artifact",
+        "actionVersion": "83fd05a356d7e2593de66fc9913b3002723633cb",
+        "tag": "v3.1.1"
     },
     {
         "actionLink": "github/super-linter",
@@ -247,6 +250,12 @@
     },
     {
         "actionLink": "dorny/test-reporter",
+        "actionVersion": "0d00bb14cb0cc2c9b8985df6e81dd333188224e1",
+        "tag": "1.5.0",
+        "deprecated": true
+    },
+    {
+        "actionLink": "dorny/test-reporter",
         "actionVersion": "c9b3d0e2bd2a4e96aaf424dbaa31c46b42318226",
         "tag": "1.6.0"
     },
@@ -275,9 +284,9 @@
         "tag": "1.8.0"
     },
     {
-      "actionLink": "mxschmitt/action-tmate",
-      "actionVersion": "28f608baaa037465aa887c21a7924e9e6b66a9e0",
-      "tag": "3.13"
+        "actionLink": "mxschmitt/action-tmate",
+        "actionVersion": "28f608baaa037465aa887c21a7924e9e6b66a9e0",
+        "tag": "3.13"
     },
     {
         "actionLink": "hadolint/hadolint-action",

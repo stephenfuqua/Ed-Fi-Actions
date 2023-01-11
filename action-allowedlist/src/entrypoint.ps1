@@ -3,18 +3,20 @@
 # The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 # See the LICENSE and NOTICES files in the project root for more information.
 
-Import-Module /src/action-allowedlist.psm1 -DisableNameChecking
+Import-Module /src/action-loader.psm1 -DisableNameChecking
+Import-Module /src/allowed-action-analyzer.psm1 -DisableNameChecking
+Import-Module /src/logging.psm1
 
-$actionsFound = LoadAllUsedActions -RepoPath $pwd
-$unapproved = CheckIfActionsApproved -outputs $actionsFound
-$jsonObject = ($unapproved | ConvertTo-Json)
-$jsonObject | out-file ./actions.json
-Write-Output "::set-output name=actions::'$jsonObject'"
+$actionsFound = Get-AllUsedActions -RepoPath $pwd
 
-if ($unapproved.Count -gt 0) {
-    Write-Error "Repo contains unapproved actions!"
-    exit 1
-}else{
-    #Write-Host "All actions were approved!"
-    exit 0
+Invoke-ValidateActions -ActionsConfiguration $actionsFound -approvedPath "/src/approved.json"
+
+Get-Log | ForEach-Object {
+    Write-Output $_
 }
+
+if (Get-ErrorOccurred) {
+    exit 1
+}
+
+exit 0

@@ -15,10 +15,21 @@ param(
     $RepoDirectory
 )
 
+Import-Module ./action-loader.psm1 -DisableNameChecking -Force
+Import-Module ./allowed-action-analyzer.psm1 -DisableNameChecking -Force
+Import-Module ./logging.psm1 -Force
 
-Import-Module ./action-allowedlist.psm1 -DisableNameChecking
+$actionsFound = Get-AllUsedActions -RepoPath $RepoDirectory
 
-$actionsFound = LoadAllUsedActions -RepoPath $RepoDirectory
-$unapproved = CheckIfActionsApproved -outputs $actionsFound -approvedPath "$($PSScriptRoot)/../approved.json"
+Invoke-ValidateActions -ActionsConfiguration $actionsFound -approvedPath "$($PSScriptRoot)/../approved.json"
 
-$unapproved | Out-Host
+Get-Log | ForEach-Object {
+    Write-Output $_
+}
+
+if (Get-ErrorOccurred) {
+    exit 1
+}
+
+exit 0
+

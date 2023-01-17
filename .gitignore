@@ -1,4 +1,7 @@
 # Reports
 *.sarif
+junit.xml
 
 ps-analyzer.xml
+
+node_modules/

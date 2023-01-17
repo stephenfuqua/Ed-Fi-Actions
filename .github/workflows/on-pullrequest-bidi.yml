@@ -1,0 +1,101 @@
+# SPDX-License-Identifier: Apache-2.0
+# Licensed to the Ed-Fi Alliance under one or more agreements.
+# The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+# See the LICENSE and NOTICES files in the project root for more information.
+
+name: "On Pull Request - Bidirectional Character Scanner"
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/on-pullrequest-bidi.yml"
+      - ".github/after-pullrequest-bidi.yml"
+      - "bidi-scanner/**/*"
+  workflow_dispatch:
+
+jobs:
+  lint-and-test-cli:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bidi-scanner/cli
+    steps:
+      - name: Checkout the Actions repo
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+
+      - name: Setup Node
+        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3.5.1
+        with:
+          node-version: 16
+          cache: 'npm'
+          cache-dependency-path: bidi-scanner/cli/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          pushd ../lib
+          npm ci
+          popd
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test:ci
+
+      - name: Upload test results
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
+        with:
+          name: bidi-test-results
+          path: ./bidi-scanner/cli/junit.xml
+          retention-days: 1
+
+  lint-lib:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bidi-scanner/lib
+    steps:
+      - name: Checkout the Actions repo
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+
+      - name: Setup Node
+        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3.5.1
+        with:
+          node-version: 16
+          cache: 'npm'
+          cache-dependency-path: bidi-scanner/cli/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+  lint-github:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bidi-scanner/github
+    steps:
+      - name: Checkout the Actions repo
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+
+      - name: Setup Node
+        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3.5.1
+        with:
+          node-version: 16
+          cache: 'npm'
+          cache-dependency-path: bidi-scanner/cli/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run build
+        # Does not save the results - just confirm that the build succeeds
+        run: npm run build

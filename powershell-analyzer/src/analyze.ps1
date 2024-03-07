@@ -172,6 +172,13 @@ function Invoke-Analyzer {
     }
 
     $results | ForEach-Object {
+        # Sometimes no line number or column is provided by the analysis. GitHub
+        # doesn't allow that; it requires an integer >= 1.
+        $line = $_.Line
+        if ($null -eq $line) { $line = 1 }
+        $column = $_.Column
+        if ($null -eq $column) { $column = 1 }
+
         $SarifData.runs[0].results += @{
             ruleId    = $_.RuleName
             level     = Get-Severity $_
@@ -185,8 +192,8 @@ function Invoke-Analyzer {
                             uri = Get-Path $_
                         }
                         region           = @{
-                            startLine   = $_.Line
-                            startColumn = $_.Column
+                            startLine   = $line
+                            startColumn = $column
                         }
                     }
                 }

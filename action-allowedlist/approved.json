@@ -640,7 +640,7 @@
   },
   {
     "actionLink": "slackapi/slack-github-action",
-    "actionVersion": "483f51618ef5cbe37df7178a55e3e10188e2ff04",
-    "tag": "1.26.0"
+    "actionVersion": "70cd7be8e40a46e8b0eced40b0de447bdb42f68e",
+    "tag": "v1.26.0"
   }
 ]

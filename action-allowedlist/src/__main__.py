@@ -3,25 +3,23 @@
 # The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 # See the LICENSE and NOTICES files in the project root for more information.
 
-# from actions_parser import get_all_used_actions, invoke_validate_actions
-# from pathlib import Path
-# import sys
-# import os
+from actions_parser import get_all_used_actions, invoke_validate_actions
+from pathlib import Path
+import sys
+import os
 
-# def main():
-#     repo_path = Path(os.getcwd())
-#     approved_path = Path(__file__).parent.parent / 'approved.json'
+def main():
+    repo_path = Path(os.getcwd())
+    approved_path = Path(__file__).parent.parent / 'approved.json'
 
-#     actions_found = get_all_used_actions(repo_path)
+    actions_found = get_all_used_actions(repo_path)
 
-#     found = invoke_validate_actions(approved_path, actions_found)
+    found = invoke_validate_actions(approved_path, actions_found)
 
-#     if found:
-#         sys.exit(1)
-#     else:
-#         sys.exit(0)
+    if found:
+        sys.exit(1)
+    else:
+        sys.exit(0)
 
-# if __name__ == "__main__":
-#     main()
-
-print("Hello, World!")
+if __name__ == "__main__":
+    main()

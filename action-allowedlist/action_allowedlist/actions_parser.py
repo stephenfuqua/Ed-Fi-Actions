@@ -3,8 +3,10 @@
 # The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 # See the LICENSE and NOTICES files in the project root for more information.
 
+from pathlib import Path
 import json
 import yaml
+
 
 def load_json_file(filepath):
     with open(filepath, 'r') as file:
@@ -38,7 +40,7 @@ def get_actions_from_file(workflow, workflow_file_name):
 
     return actions
 
-def get_all_used_actions(workflow_dir):
+def get_all_used_actions(workflow_dir: Path):
     print("Loading Actions YAML files")
     workflow_files = list(workflow_dir.glob("*.yml"))
 

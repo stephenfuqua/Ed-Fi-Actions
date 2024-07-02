@@ -4,7 +4,7 @@
 # See the LICENSE and NOTICES files in the project root for more information.
 
 # action.yml
-name: 'Action Whitelist'
+name: 'Allowed Actions'
 author: 'Ed-Fi Alliance'
 description: 'Scan for action files and only allow actions from approved Authors and commit hash version'
 branding:

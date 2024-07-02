@@ -5,15 +5,15 @@
 
 from actions_parser import get_all_used_actions, invoke_validate_actions
 from pathlib import Path
+from os.path import abspath
 import sys
-import os
 
-def main():
-    repo_path = Path(os.getcwd())
-    print(repo_path)
-    approved_path = Path("/app/approved.json")
 
-    actions_found = get_all_used_actions(repo_path)
+def main(workflow_directory: Path, approved_path: Path):
+    print(f"Repository path to scan: {workflow_directory}")
+    print(f"Approval file: {approved_path}")
+
+    actions_found = get_all_used_actions(workflow_directory)
 
     found = invoke_validate_actions(approved_path, actions_found)
 
@@ -22,5 +22,14 @@ def main():
     else:
         sys.exit(0)
 
+
 if __name__ == "__main__":
-    main()
+    workflow_directory = Path(abspath(sys.argv[1]))
+    approved_path = Path(abspath(sys.argv[2]))
+
+    if workflow_directory is None or approved_path is None:
+        raise RuntimeError(
+            "Must specify the workflow directory and path to the approved file at the command line."
+        )
+
+    main(workflow_directory, approved_path)

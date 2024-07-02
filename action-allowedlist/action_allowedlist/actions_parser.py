@@ -5,8 +5,6 @@
 
 import json
 import yaml
-import sys
-from pathlib import Path
 
 def load_json_file(filepath):
     with open(filepath, 'r') as file:

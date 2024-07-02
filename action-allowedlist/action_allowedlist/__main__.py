@@ -10,7 +10,8 @@ import os
 
 def main():
     repo_path = Path(os.getcwd())
-    approved_path = Path(__file__).parent.parent / 'approved.json'
+    print(repo_path)
+    approved_path = Path("/app/approved.json")
 
     actions_found = get_all_used_actions(repo_path)
 

@@ -6,4 +6,5 @@
 #
 
 cd /app
+export PATH="/root/.local/bin:$PATH"
 poetry run python action_allowedlist

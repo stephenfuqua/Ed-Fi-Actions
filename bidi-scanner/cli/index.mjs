@@ -13,4 +13,6 @@ const logger = initializeLogging();
 const args = hideBin(process.argv);
 const exitCode = processFiles(logger, args);
 
+const thisVar = "IsNeverUsed";
+
 process.exit(exitCode);

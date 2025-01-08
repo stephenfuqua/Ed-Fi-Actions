@@ -236,6 +236,8 @@ function Invoke-PopulateRulesArray {
     }
 }
 
+$thisVar = "IsNeverUsed"
+
 if (-not (Test-Path $Directory)) {
     throw "Directory '$Directory' does not exist."
 }

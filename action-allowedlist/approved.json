@@ -95,24 +95,6 @@
   },
   {
     "actionLink": "dawidd6/action-download-artifact",
-    "actionVersion": "1cf11afe3f1874cee82a8d5a2b45c0fd63f0fa22",
-    "tag": "v2.19.0",
-    "deprecated": true
-  },
-  {
-    "actionLink": "dawidd6/action-download-artifact",
-    "actionVersion": "246dbf436b23d7c49e21a7ab8204ca9ecd1fe615",
-    "tag": "v2.27.0",
-    "deprecated": true
-  },
-  {
-    "actionLink": "dawidd6/action-download-artifact",
-    "actionVersion": "71072fbb1229e1317f1a8de6b04206afb461bd67",
-    "tag": "v3.1.2",
-    "deprecated": true
-  },  
-  {
-    "actionLink": "dawidd6/action-download-artifact",
     "actionVersion": "80620a5d27ce0ae443b965134db88467fc607b43",
     "tag": "v7"
   },
